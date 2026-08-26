@@ -67,7 +67,7 @@ text-align:center;
 
 body{
 	margin:0;
-	color:#6a6f8c;
+	color:#c7ccd1;
 
 	font:600 16px/18px 'Open Sans',sans-serif;
 }
@@ -95,4 +95,26 @@ input[type=button], input[type=submit], input[type=reset] {
   margin: 4px 2px;
   cursor: pointer;
   margin-left: 40%;
+}
+/* ===== COUNTRY LIST TABLE ===== */
+
+.header-row {
+    background-color: #c7ccd1;
+    font-weight: bold;
+    text-align: center;
+}
+
+.header-row > div {
+    padding: 10px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.country-row {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.country-row > div {
+    padding: 10px;
 }

@@ -16,7 +16,7 @@
   <body> 
     <!-- following section is used for creating the menubar in the webpage -->
 	<section id="header" style="background-color: #7b9da6;">
-		<div class="row">  
+		<div class="row header-row">  
 			<div class="col-md-2" style="font-size: 30px;color:#fcfeff;"> Data Explorer </div>
 			<div class="col-md-10" style="text-align: right"> 
 				<a href="#" style="color: #fcfeff;"> Home </a> 
@@ -29,18 +29,18 @@
 	<section id = "section1">
 		<div class="title" style="background-color: #7b9da6;"> Country Information </div>
 		<div style="margin-left:10%; margin-right:10%; margin-top:50px; margin-bottom:50px;text-align:center;background:#66b3ff;">
-			<div class="row" style="padding:5px;"> 
-				<div class="col-md-1">  year </div>
-				<div class="col-md-1">  country_code </div>
-				<div class="col-md-1">  country_name </div>
-				<div class="col-md-1">  capital </div>
-				<div class="col-md-1">  continent </div>
-				<div class="col-md-1">  region </div>
-				<div class="col-md-1">  population </div>
-				<div class="col-md-1">  gdp </div>
-				<div class="col-md-1">  life_expectancy </div>
-				<div class="col-md-1">  literacy_rate </div>
-				<div class="col-md-1">  co2_emission </div>
+			<div class="row country-row" style="padding:5px;"> 
+				<div class="col-md-1">Year</div>
+    			<div class="col-md-1">Country Code</div>
+    			<div class="col-md-2">Country Name</div>
+    			<div class="col-md-1">Capital</div>
+    			<div class="col-md-1">Continent</div>
+    			<div class="col-md-1">Region</div>
+    			<div class="col-md-1">Population</div>
+    			<div class="col-md-1">GDP</div>
+    			<div class="col-md-1">Life Expectancy</div>
+    			<div class="col-md-1">Literacy Rate</div>
+    			<div class="col-md-1">CO2 Emission</div>
 		
 			</div>
 			
@@ -48,7 +48,7 @@
 			
 			<?php 
 			require_once("dbconnect.php");
-			$sql = "SELECT * FROM country_info";
+			$sql = "SELECT * FROM country_info ORDER BY country_name ASC";
 			$result = mysqli_query($conn, $sql);
 			if(mysqli_num_rows($result) > 0){
 				//here we will print every row that is returned by our query $sql
@@ -67,9 +67,6 @@
 				<div class="col-md-1">  <?php echo $row[8] ?> </div>
 				<div class="col-md-1">  <?php echo $row[9] ?> </div>
 				<div class="col-md-1">  <?php echo $row[10] ?> </div>
-				<div class="col-md-1">  <?php echo $row[11] ?> </div>
-				<div class="col-md-1">  <?php echo $row[12] ?> </div>
-				<div class="col-md-1">  <?php echo $row[13] ?> </div>
 				
 			</div>
 			
