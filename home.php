@@ -21,6 +21,9 @@
 			<div class="col-md-10" style="text-align: right"> 
 				<a href="#" style="color: #fcfeff;"> Home </a> 
 				<a href="show_students.php" style="margin-left: 20px; color: #fcfeff;"> Country Info </a> 
+				<!-- ----tasnia work start ---- -->
+				<a href="country_comparison.php" style="margin-left: 20px; color: #fcfeff;"> Country Comparison </a> 
+				<!-- -----tasnia work stop--- -->
 				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Report  </a> 
 			</div>
 		</div>
