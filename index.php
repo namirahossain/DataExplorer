@@ -33,6 +33,9 @@
 			<span style="color: #7b9da6;"> Username: </span> <input type="text" name="fname"> <br/>
 			<span style="color: #7b9da6;"> Password: </span> <input type="password" name="pass"> <br/> <br/>
 			<input type="submit" value="Sign In" style="background-color: #7b9da6; color: #fcfeff;">
+			<br><br>
+			<span style="color: #7b9da6;">Not a user yet?</span>
+			<a href="signup.php" style="color: #7b9da6;">Sign Up</a>
 		</form>
 	</section>
 

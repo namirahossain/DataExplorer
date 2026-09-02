@@ -19,13 +19,30 @@
 		<div class="row">  
 			<div class="col-md-2" style="font-size: 30px;color:#fcfeff;"> Data Explorer </div>
 			<div class="col-md-10" style="text-align: right"> 
-				<a href="#" style="color: #fcfeff;"> Home </a> 
-				<a href="show_students.php" style="margin-left: 20px; color: #fcfeff;"> Country Info </a> 
-				<!-- ----tasnia work start ---- -->
-				<a href="country_comparison.php" style="margin-left: 20px; color: #fcfeff;"> Country Comparison </a> 
-				<!-- -----tasnia work stop--- -->
-				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Report  </a> 
-			</div>
+
+    <a href="home.php" style="color: #fcfeff;"> Home </a> 
+
+    <a href="show_students.php" 
+       style="margin-left: 20px; color: #fcfeff;"> 
+       Country Info 
+    </a> 
+
+    <a href="country_comparison.php" 
+       style="margin-left: 20px; color: #fcfeff;"> 
+       Country Comparison 
+    </a> 
+
+    <a href="evolution.php" 
+       style="margin-left: 20px; color: #fcfeff;"> 
+       Data Evolution 
+    </a> 
+
+    <a href="report.php" 
+       style="margin-left: 20px; color: #fcfeff;"> 
+       Report 
+    </a> 
+
+</div>
 		</div>
 	</section>
 	
