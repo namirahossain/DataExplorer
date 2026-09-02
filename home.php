@@ -20,7 +20,7 @@
 			<div class="col-md-2" style="font-size: 30px;color:#fcfeff;"> Data Explorer </div>
 			<div class="col-md-10" style="text-align: right"> 
 
-    <a href="home.php" style="color: #fcfeff;"> Home </a> 
+     
 
     <a href="show_students.php" 
        style="margin-left: 20px; color: #fcfeff;"> 
