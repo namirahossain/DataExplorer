@@ -16,12 +16,16 @@
   <body> 
     <!-- following section is used for creating the menubar in the webpage -->
 	<section id="header" style="background-color: #7b9da6;">
-		<div class="row header-row">  
+		<div class="row">  
 			<div class="col-md-2" style="font-size: 30px;color:#fcfeff;"> Data Explorer </div>
 			<div class="col-md-10" style="text-align: right"> 
-				<a href="#" style="color: #fcfeff;"> Home </a> 
-				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Country Info </a> 
-				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Report  </a> 
+				<a href="home.php" style="color: #fcfeff;"> Home </a> 
+				<a href="show_students.php" style="margin-left: 20px; color: #fcfeff;"> Country Info </a> 
+				<a href="country_comparison.php" style="margin-left: 20px; color: #fcfeff;"> Country Comparison </a> 
+				<a href="evolution.php" style="margin-left: 20px; color: #fcfeff;"> Data Evolution </a> 
+				<a href="history.php" style="margin-left: 20px; color: #fcfeff;"> History </a> 
+				<a href="profile.php" style="margin-left: 20px; color: #fcfeff;"> Profile </a> 
+				<a href="logout.php" style="margin-left: 20px; color: #fcfeff;"> Logout </a> 
 			</div>
 		</div>
 	</section>

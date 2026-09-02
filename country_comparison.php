@@ -146,6 +146,31 @@ require_once 'history_helper.php';
 				<div class="col-md-4"><?php echo $row4[10]; ?></div>
 			</div>
 		</div>
+		</div>
+
+<form method="POST" action="report.php" style="text-align:center; margin-bottom:30px;">
+
+    <input type="hidden"
+           name="country1"
+           value="<?php echo htmlspecialchars($c1); ?>">
+
+    <input type="hidden"
+           name="country2"
+           value="<?php echo htmlspecialchars($c2); ?>">
+
+    <button type="submit"
+            name="generate_report"
+            style="background-color:#7b9da6;
+                   color:#fcfeff;
+                   padding:10px 25px;
+                   border:none;
+                   border-radius:5px;">
+
+        Generate Report
+
+    </button>
+
+</form>
 		<?php 
 					// log history for comparison view
 					if (isset($_SESSION['user_id'])) {
