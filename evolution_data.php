@@ -1,6 +1,7 @@
 <?php
-
+session_start();
 require_once 'dbconnect.php';
+require_once 'history_helper.php';
 
 header('Content-Type: application/json');
 
@@ -179,6 +180,14 @@ while ($row = $result->fetch_assoc()) {
 
 }
 
+
+// ==========================================
+// LOG HISTORY
+// ==========================================
+
+if (isset($_SESSION['user_id'])) {
+    log_history($conn, $_SESSION['user_id'], null);
+}
 
 // ==========================================
 // RETURN JSON

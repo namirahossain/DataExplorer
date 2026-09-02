@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // first of all, we need to connect to the database
 require_once('dbconnect.php');
 
@@ -14,13 +16,20 @@ if(isset($_POST['fname']) && isset($_POST['pass'])){
 	
 	//check if it returns an empty set
 	if(mysqli_num_rows($result) !=0 ){
-	
-		//echo "LET HIM ENTER";
+
+		$row = mysqli_fetch_assoc($result);
+
+		$_SESSION['user_id'] = $row['user_id'];
+		$_SESSION['user_name'] = $row['user_name'];
+		$_SESSION['user_country'] = $row['user_country'];
+
 		header("Location: home.php");
+		exit();
 	}
 	else{
 		// echo "Username or Password is wrong";
 		header("Location: index.php");
+		exit();
 	}
 	
 }

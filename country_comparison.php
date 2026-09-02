@@ -1,3 +1,7 @@
+<?php
+session_start();
+require_once 'history_helper.php';
+?>
 <html lang="en">
   <head>
       <meta charset="utf-8"/>
@@ -22,7 +26,10 @@
 				<a href="home.php" style="color: #fcfeff;"> Home </a> 
 				<a href="show_students.php" style="margin-left: 20px; color: #fcfeff;"> Country Info </a> 
 				<a href="country_comparison.php" style="margin-left: 20px; color: #fcfeff;"> Country Comparison </a> 
-				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Report  </a> 
+				<a href="evolution.php" style="margin-left: 20px; color: #fcfeff;"> Data Evolution </a> 
+				<a href="history.php" style="margin-left: 20px; color: #fcfeff;"> History </a> 
+				<a href="profile.php" style="margin-left: 20px; color: #fcfeff;"> Profile </a> 
+				<a href="logout.php" style="margin-left: 20px; color: #fcfeff;"> Logout </a> 
 			</div>
 		</div>
 	</section>
@@ -140,6 +147,11 @@
 			</div>
 		</div>
 		<?php 
+					// log history for comparison view
+					if (isset($_SESSION['user_id'])) {
+						require_once("dbconnect.php");
+						log_history($conn, $_SESSION['user_id'], null);
+					}
 					}
 					else{
 						echo "<div style='text-align:center; color:red; margin-bottom:20px;'> Country not found </div>";
