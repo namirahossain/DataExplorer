@@ -1,4 +1,3 @@
-```php
 <?php
 
 require_once('dbconnect.php');
@@ -32,4 +31,3 @@ if(isset($_POST['fname']) && isset($_POST['pass'])){
 }
 
 ?>
-```

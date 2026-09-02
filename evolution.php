@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once 'dbconnect.php';
 
 
@@ -380,16 +380,32 @@ while ($row = $yearResult->fetch_assoc()) {
 
     <div class="nav-links">
 
-        <a href="index.php">
+        <a href="home.php">
             Home
         </a>
 
-        <a href="country_info.php">
+        <a href="show_students.php">
             Country Info
         </a>
 
-        <a href="report.php">
-            Report
+        <a href="country_comparison.php">
+            Comparison
+        </a>
+
+        <a href="evolution.php">
+            Evolution
+        </a>
+
+        <a href="history.php">
+            History
+        </a>
+
+        <a href="profile.php">
+            Profile
+        </a>
+
+        <a href="logout.php">
+            Logout
         </a>
 
     </div>
