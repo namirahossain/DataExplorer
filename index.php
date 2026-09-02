@@ -18,11 +18,7 @@
 	<section id="header" style="background-color: #7b9da6;">
 		<div class="row">  
 			<div class="col-md-2" style="font-size: 30px;color:#fcfeff;"> Data Explorer </div>
-			<div class="col-md-10" style="text-align: right"> 
-				<a href="#" style="color: #fcfeff;"> Home </a> 
-				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Country Info </a> 
-				<a href="#" style="margin-left: 20px; color: #fcfeff;"> Report  </a> 
-			</div>
+			
 		</div>
 	</section>
 	

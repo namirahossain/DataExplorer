@@ -24,19 +24,7 @@
                 Data Explorer
             </div>
 
-            <div class="col-md-10" style="text-align: right;">
-                <a href="#" style="color: #fcfeff;">Home</a>
-
-                <a href="#"
-                   style="margin-left: 20px; color: #fcfeff;">
-                    country info
-                </a>
-
-                <a href="#"
-                   style="margin-left: 20px; color: #fcfeff;">
-                    year
-                </a>
-            </div>
+            
 
         </div>
     </section>
