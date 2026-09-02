@@ -52,7 +52,7 @@
 			
 			<?php 
 			require_once("dbconnect.php");
-			$sql = "SELECT * FROM country_info ORDER BY country_name ASC";
+			$sql = "SELECT * FROM country_info ORDER BY country_name ASC, year DESC";
 			$result = mysqli_query($conn, $sql);
 			if(mysqli_num_rows($result) > 0){
 				//here we will print every row that is returned by our query $sql

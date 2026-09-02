@@ -246,7 +246,24 @@ $result = $conn->query($sql);
         ?>
 
     </table>
+<form method="POST" action="report.php" style="text-align:center; margin-top:30px;">
 
+        <input type="hidden"
+               name="report_type"
+               value="Country Ranking">
+
+        <input type="hidden"
+               name="ranking_type"
+               value="<?php echo htmlspecialchars($ranking_type); ?>">
+
+        <button type="submit"
+                name="generate_report">
+
+            Generate Report
+
+        </button>
+
+    </form>
 </div>
 
 </body>

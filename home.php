@@ -29,7 +29,7 @@ if (!isset($_SESSION['user_id'])) {
 
      
 
-    <a href="show_students.php" 
+    <a href="country_info.php" 
        style="margin-left: 20px; color: #fcfeff;"> 
        Country Info 
     </a> 
@@ -77,7 +77,7 @@ if (!isset($_SESSION['user_id'])) {
 
 		<div style="margin: 40px auto; width: 80%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
-			<a href="show_students.php" style="background:white; padding:25px; border-radius:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); color:#5f8995; text-decoration:none;">
+			<a href="country_info.php" style="background:white; padding:25px; border-radius:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); color:#5f8995; text-decoration:none;">
 				<h3>Country Info</h3>
 				<p style="color:#777; font-size:14px;">Browse all country data</p>
 			</a>

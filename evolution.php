@@ -411,7 +411,43 @@ while ($row = $yearResult->fetch_assoc()) {
     </div>
 
 </nav>
+<!-- GENERATE REPORT BUTTON -->
 
+<div id="reportButton"
+     style="text-align:center; margin-top:30px; display:none;">
+
+    <form method="POST" action="report.php">
+
+        <input type="hidden"
+               name="report_type"
+               value="Data Evolution">
+
+        <input type="hidden"
+               name="country_code"
+               id="reportCountry">
+
+        <input type="hidden"
+               name="attribute"
+               id="reportAttribute">
+
+        <input type="hidden"
+               name="from_year"
+               id="reportFromYear">
+
+        <input type="hidden"
+               name="to_year"
+               id="reportToYear">
+
+        <button type="submit"
+                name="generate_report">
+
+            Generate Report
+
+        </button>
+
+    </form>
+
+</div>
 
 
 <!-- ================= MAIN ================= -->
@@ -696,6 +732,14 @@ function loadEvolution() {
 
     const toYear =
         document.getElementById("toYear").value;
+		
+		document.getElementById("reportCountry").value = country;
+
+		document.getElementById("reportAttribute").value = attribute;
+
+		document.getElementById("reportFromYear").value = fromYear;
+
+		document.getElementById("reportToYear").value = toYear;
 
 
 
@@ -961,6 +1005,8 @@ function loadEvolution() {
 
 
             document.getElementById("summary").style.display =
+                "block";
+				document.getElementById("reportButton").style.display =
                 "block";
 
         }
