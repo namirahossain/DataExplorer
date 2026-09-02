@@ -1,3 +1,4 @@
+```php
 <?php
 include 'DBconnect.php';
 
@@ -5,62 +6,169 @@ $selected_country = "";
 $similar_countries = array();
 
 if (isset($_POST['country'])) {
-
     $selected_country = $_POST['country'];
 
-    // Get the selected country's information
-    $sql = "SELECT * FROM country_info WHERE country_name = '$selected_country'";
-
-    $result = $conn->query($sql);
+    // Get selected country
+    $sql = "SELECT * FROM country_info WHERE country_name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $selected_country);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
 
-        $country = $result->fetch_assoc();
+        $selected = $result->fetch_assoc();
 
-        $population = $country['population'];
-        $gdp = $country['gdp'];
-        $life_expectancy = $country['life_expectancy'];
-        $literacy_rate = $country['literacy_rate'];
-        $co2_emission = $country['co2_emission'];
+        // Get minimum and maximum values for normalization
+        $range_sql = "SELECT
+                        MIN(population) AS min_population,
+                        MAX(population) AS max_population,
+                        MIN(gdp) AS min_gdp,
+                        MAX(gdp) AS max_gdp,
+                        MIN(life_expectancy) AS min_life,
+                        MAX(life_expectancy) AS max_life,
+                        MIN(literacy_rate) AS min_literacy,
+                        MAX(literacy_rate) AS max_literacy,
+                        MIN(co2_emission) AS min_co2,
+                        MAX(co2_emission) AS max_co2
+                      FROM country_info";
+
+        $range_result = $conn->query($range_sql);
+        $ranges = $range_result->fetch_assoc();
 
         // Get all other countries
-        $sql2 = "SELECT * FROM country_info WHERE country_name != '$selected_country'";
+        $all_sql = "SELECT * FROM country_info WHERE country_name != ?";
+        $all_stmt = $conn->prepare($all_sql);
+        $all_stmt->bind_param("s", $selected_country);
+        $all_stmt->execute();
+        $all_result = $all_stmt->get_result();
 
-        $result2 = $conn->query($sql2);
+        while ($country = $all_result->fetch_assoc()) {
 
-        while ($row = $result2->fetch_assoc()) {
+            /*
+             * Calculate similarity for each indicator.
+             * The result is between 0% and 100%.
+             */
 
-            // Calculate differences
-            $population_difference = abs($population - $row['population']);
-            $gdp_difference = abs($gdp - $row['gdp']);
-            $life_difference = abs($life_expectancy - $row['life_expectancy']);
-            $literacy_difference = abs($literacy_rate - $row['literacy_rate']);
-            $co2_difference = abs($co2_emission - $row['co2_emission']);
+            // Population similarity
+            if ($ranges['max_population'] != $ranges['min_population']) {
+                $population_similarity =
+                    (1 - abs($selected['population'] - $country['population']) /
+                    ($ranges['max_population'] - $ranges['min_population'])) * 100;
+            } else {
+                $population_similarity = 100;
+            }
 
-            // Calculate a simple similarity score
-            $score =
-                $population_difference +
-                $gdp_difference +
-                $life_difference +
-                $literacy_difference +
-                $co2_difference;
+            // GDP similarity
+            if ($ranges['max_gdp'] != $ranges['min_gdp']) {
+                $gdp_similarity =
+                    (1 - abs($selected['gdp'] - $country['gdp']) /
+                    ($ranges['max_gdp'] - $ranges['min_gdp'])) * 100;
+            } else {
+                $gdp_similarity = 100;
+            }
 
-            $row['score'] = $score;
+            // Life expectancy similarity
+            if ($ranges['max_life'] != $ranges['min_life']) {
+                $life_similarity =
+                    (1 - abs($selected['life_expectancy'] - $country['life_expectancy']) /
+                    ($ranges['max_life'] - $ranges['min_life'])) * 100;
+            } else {
+                $life_similarity = 100;
+            }
 
-            $similar_countries[] = $row;
+            // Literacy similarity
+            if ($ranges['max_literacy'] != $ranges['min_literacy']) {
+                $literacy_similarity =
+                    (1 - abs($selected['literacy_rate'] - $country['literacy_rate']) /
+                    ($ranges['max_literacy'] - $ranges['min_literacy'])) * 100;
+            } else {
+                $literacy_similarity = 100;
+            }
+
+            // CO2 similarity
+            if ($ranges['max_co2'] != $ranges['min_co2']) {
+                $co2_similarity =
+                    (1 - abs($selected['co2_emission'] - $country['co2_emission']) /
+                    ($ranges['max_co2'] - $ranges['min_co2'])) * 100;
+            } else {
+                $co2_similarity = 100;
+            }
+
+            // Keep similarity values between 0 and 100
+            if ($population_similarity < 0) $population_similarity = 0;
+            if ($population_similarity > 100) $population_similarity = 100;
+
+            if ($gdp_similarity < 0) $gdp_similarity = 0;
+            if ($gdp_similarity > 100) $gdp_similarity = 100;
+
+            if ($life_similarity < 0) $life_similarity = 0;
+            if ($life_similarity > 100) $life_similarity = 100;
+
+            if ($literacy_similarity < 0) $literacy_similarity = 0;
+            if ($literacy_similarity > 100) $literacy_similarity = 100;
+
+            if ($co2_similarity < 0) $co2_similarity = 0;
+            if ($co2_similarity > 100) $co2_similarity = 100;
+
+            // Overall similarity
+            $overall_similarity =
+                ($population_similarity +
+                 $gdp_similarity +
+                 $life_similarity +
+                 $literacy_similarity +
+                 $co2_similarity) / 5;
+
+            /*
+             * Indicators that are considered similar.
+             * 70% or more = Similar
+             */
+            $basis = array();
+
+            if ($population_similarity >= 70) {
+                $basis[] = "✓ Population";
+            }
+
+            if ($gdp_similarity >= 70) {
+                $basis[] = "✓ GDP";
+            }
+
+            if ($life_similarity >= 70) {
+                $basis[] = "✓ Life Expectancy";
+            }
+
+            if ($literacy_similarity >= 70) {
+                $basis[] = "✓ Literacy Rate";
+            }
+
+            if ($co2_similarity >= 70) {
+                $basis[] = "✓ CO₂ Emission";
+            }
+
+            if (count($basis) == 0) {
+                $basis_text = "No strong matching indicator";
+            } else {
+                $basis_text = implode(" &nbsp; ", $basis);
+            }
+
+            $similar_countries[] = array(
+                "country_name" => $country['country_name'],
+                "continent" => $country['continent'],
+                "region" => $country['region'],
+                "similarity" => $overall_similarity,
+                "basis" => $basis_text
+            );
         }
 
-        // Sort countries by similarity score
+        // Sort countries from highest similarity to lowest similarity
         for ($i = 0; $i < count($similar_countries); $i++) {
-
             for ($j = $i + 1; $j < count($similar_countries); $j++) {
 
-                if ($similar_countries[$j]['score'] < $similar_countries[$i]['score']) {
+                if ($similar_countries[$j]['similarity'] >
+                    $similar_countries[$i]['similarity']) {
 
                     $temp = $similar_countries[$i];
-
                     $similar_countries[$i] = $similar_countries[$j];
-
                     $similar_countries[$j] = $temp;
                 }
             }
@@ -70,102 +178,270 @@ if (isset($_POST['country'])) {
 ?>
 
 <!DOCTYPE html>
-
 <html>
-
 <head>
 
     <title>Similar Country Finder</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e9eef2;
+            color: #333333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .title {
+            text-align: center;
+            color: #3b82b5;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            text-align: center;
+            color: #666666;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        select {
+            width: 300px;
+            padding: 12px;
+            border: 1px solid #b8c7d1;
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: #f7f9fa;
+        }
+
+        button {
+            padding: 12px 22px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #5b9bd5;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #417cae;
+        }
+
+        .selected-country {
+            background-color: #dcebf5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #34566e;
+        }
+
+        .table-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #5b9bd5;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #d8e0e5;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f3f6f8;
+        }
+
+        tr:hover {
+            background-color: #e5f1f8;
+        }
+
+        .score {
+            font-weight: bold;
+            color: #3578a8;
+        }
+
+        .basis {
+            color: #456b80;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .no-result {
+            text-align: center;
+            padding: 30px;
+            color: #777777;
+        }
+
+    </style>
 
 </head>
 
 <body>
 
-    <h1>Similar Country Finder</h1>
+<div class="container">
 
-    <form method="POST">
+    <h1 class="title">Similar Country Finder</h1>
 
-        <label>Select a country:</label>
+    <p class="description">
+        Find countries that are similar based on population, GDP,
+        life expectancy, literacy rate and CO₂ emissions.
+    </p>
 
-        <select name="country">
+    <div class="search-box">
 
-            <?php
+        <form method="POST">
 
-            $sql = "SELECT country_name FROM country_info";
+            <select name="country" required>
 
-            $result = $conn->query($sql);
+                <option value="">Select a country</option>
 
-            while ($row = $result->fetch_assoc()) {
+                <?php
 
-                echo "<option value='" . $row['country_name'] . "'>";
+                $country_sql = "SELECT DISTINCT country_name
+                                FROM country_info
+                                ORDER BY country_name";
 
-                echo $row['country_name'];
+                $country_result = $conn->query($country_sql);
 
-                echo "</option>";
-            }
+                while ($row = $country_result->fetch_assoc()) {
 
-            ?>
+                    $country_name = $row['country_name'];
 
-        </select>
+                    if ($country_name == $selected_country) {
+                        echo "<option value=\"" .
+                             htmlspecialchars($country_name) .
+                             "\" selected>" .
+                             htmlspecialchars($country_name) .
+                             "</option>";
+                    } else {
+                        echo "<option value=\"" .
+                             htmlspecialchars($country_name) .
+                             "\">" .
+                             htmlspecialchars($country_name) .
+                             "</option>";
+                    }
+                }
 
-        <br><br>
+                ?>
 
-        <button type="submit">Find Similar Countries</button>
+            </select>
 
-    </form>
+            <button type="submit">
+                Find Similar Countries
+            </button>
 
+        </form>
 
-    <?php
+    </div>
 
-    if (count($similar_countries) > 0) {
+    <?php if ($selected_country != "") { ?>
 
-        echo "<h2>Countries similar to " . $selected_country . "</h2>";
+        <div class="selected-country">
 
-        echo "<table border='1' cellpadding='10'>";
+            <strong>Selected Country:</strong>
+            <?php echo htmlspecialchars($selected_country); ?>
 
-        echo "<tr>";
+        </div>
 
-        echo "<th>Country</th>";
-        echo "<th>Continent</th>";
-        echo "<th>Region</th>";
-        echo "<th>Population</th>";
-        echo "<th>GDP</th>";
-        echo "<th>Life Expectancy</th>";
-        echo "<th>Literacy Rate</th>";
-        echo "<th>CO2 Emission</th>";
+        <div class="table-box">
 
-        echo "</tr>";
+            <?php if (count($similar_countries) > 0) { ?>
 
-        $limit = 5;
+                <table>
 
-        for ($i = 0; $i < count($similar_countries) && $i < $limit; $i++) {
+                    <tr>
 
-            echo "<tr>";
+                        <th>Country</th>
 
-            echo "<td>" . $similar_countries[$i]['country_name'] . "</td>";
+                        <th>Similarity Score</th>
 
-            echo "<td>" . $similar_countries[$i]['continent'] . "</td>";
+                        <th>Similar Based On</th>
 
-            echo "<td>" . $similar_countries[$i]['region'] . "</td>";
+                        <th>Continent</th>
 
-            echo "<td>" . $similar_countries[$i]['population'] . "</td>";
+                        <th>Region</th>
 
-            echo "<td>" . $similar_countries[$i]['gdp'] . "</td>";
+                    </tr>
 
-            echo "<td>" . $similar_countries[$i]['life_expectancy'] . "</td>";
+                    <?php
 
-            echo "<td>" . $similar_countries[$i]['literacy_rate'] . "</td>";
+                    foreach ($similar_countries as $country) {
 
-            echo "<td>" . $similar_countries[$i]['co2_emission'] . "</td>";
+                        echo "<tr>";
 
-            echo "</tr>";
-        }
+                        echo "<td>" .
+                             htmlspecialchars($country['country_name']) .
+                             "</td>";
 
-        echo "</table>";
-    }
+                        echo "<td class='score'>" .
+                             number_format($country['similarity'], 1) .
+                             "%" .
+                             "</td>";
 
-    ?>
+                        echo "<td class='basis'>" .
+                             $country['basis'] .
+                             "</td>";
+
+                        echo "<td>" .
+                             htmlspecialchars($country['continent']) .
+                             "</td>";
+
+                        echo "<td>" .
+                             htmlspecialchars($country['region']) .
+                             "</td>";
+
+                        echo "</tr>";
+                    }
+
+                    ?>
+
+                </table>
+
+            <?php } else { ?>
+
+                <div class="no-result">
+                    No similar countries found.
+                </div>
+
+            <?php } ?>
+
+        </div>
+
+    <?php } ?>
+
+</div>
 
 </body>
-
 </html>
+```
